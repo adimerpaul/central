@@ -112,11 +112,36 @@
     </q-page-container>
 
     <q-footer>
-      <q-toolbar>
-        <q-toolbar-title>
-          Quasar App
-        </q-toolbar-title>
-      </q-toolbar>
+<!--      <q-toolbar>-->
+<!--        <q-toolbar-title>-->
+<!--          Quasar App-->
+<!--        </q-toolbar-title>-->
+<!--      </q-toolbar>-->
+      <div class="row fondo-footer ">
+        <div class="col-12 col-md-6 q-pa-md">
+          <div class="text-h5">Fraternidad Morenada</div>
+          Central Oruro <br>
+          100 AÑOS DE HISTORIA Y TRADICIÓN! <br>
+        </div>
+        <div class="col-12 col-md-6 text-right q-pa-md">
+          <div class="text-h5">Contáctenos</div>
+          Av. 6 de Agosto N° 724 entre 1° de noviembre y León, Oruro - Bolivia <br>
+          +591 2 5256611 <br>
+          <div class="text-bold">
+            info@morenadacentral.com.bo
+          </div>
+          <div>
+            <q-btn icon="fab fa-facebook" flat target="_blank" href="https://www.facebook.com/fraternidadmorenadacentralorurooficial" />
+            <q-btn icon="fab fa-instagram" flat target="_blank" href="https://www.instagram.com/frat.morenadacentraloruro" />
+            <q-btn icon="fab fa-tiktok" flat target="_blank" href="https://www.tiktok.com/@morenadacentraloruro" />
+            <q-btn icon="fab fa-youtube" flat target="_blank" href="https://www.youtube.com/@CentralTvBolivia" />
+            <q-btn icon="fab fa-whatsapp" flat target="_blank" href="https://api.whatsapp.com/send?phone=59169600100&text=Hola" />
+          </div>
+        </div>
+        <div class="col-12 text-center q-pa-xs">
+          Copyright © {{ new Date().getFullYear() }}
+        </div>
+      </div>
     </q-footer>
   </q-layout>
 </template>
@@ -202,5 +227,13 @@ function logout() {
   border-radius: 10px;
   margin: 5px;
   padding: 5px
+}
+.fondo-footer {
+ background-image: url('./fnd2.png');
+ //background-size: cover;
+ background-position: center;
+ background-repeat: no-repeat;
+ width: 100%;
+ min-height: 200px;
 }
 </style>
