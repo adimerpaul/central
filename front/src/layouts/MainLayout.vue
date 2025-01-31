@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh Lpr fff">
-    <q-header>
+    <q-header elevated style="height: 75px;">
       <q-toolbar>
         <q-btn
           flat
@@ -12,9 +12,16 @@
           v-if="$q.screen.lt.md"
         />
 
-        <q-toolbar-title>
-          <!-- Quasar App -->
+        <q-toolbar-title v-if="!$q.screen.lt.md">
+          <div class="q-pa-xs">
+            <q-img
+              src="logo-2.png"
+              alt="Logo"
+              width="55px"
+            />
+          </div>
         </q-toolbar-title>
+        <q-space />
 
         <!-- q-tabs se muestra solo si el drawer está cerrado -->
         <q-tabs dense v-if="!$q.screen.lt.md">
@@ -26,6 +33,13 @@
             :to="link.link"
           />
         </q-tabs>
+        <div class="q-pa-xs">
+          <q-img
+            src="logo-1.png"
+            alt="Logo"
+            width="55px"
+          />
+        </div>
       </q-toolbar>
     </q-header>
 
