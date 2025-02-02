@@ -6,6 +6,7 @@ export const useCounterStore = defineStore('counter', {
     isLogged: !!localStorage.getItem('tokenMorenada'),
     user: {},
     loading: false,
+    permissions: []
   }),
 
   getters: {

@@ -29,7 +29,9 @@ class UserController extends Controller{
         ]);
     }
     function me(Request $request){
-        return $request->user();
+        return User::where('id', $request->user()->id)
+            ->with('permissions')
+            ->first();
     }
     function index(){
         return User::where('id', '!=', 1)
