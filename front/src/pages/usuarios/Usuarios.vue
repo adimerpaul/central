@@ -1,95 +1,195 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-page-container>
-      <q-page>
-        <div class="row">
-          <div class="col-12 col-md-8 flex flex-center" style="background: #E6EDF9;height: 100vh" v-if="!$q.screen.lt.md">
-            <div style="position: absolute; top: 25px; left: 40px">
-              <!--              <div class="q-ml-lg">-->
-              <!--                <q-img src="icon.svg" width="25px" class="q-mr-md" />-->
-              <q-img src="logo.png" width="70px" style="border-radius: 50%" />
-              <!--              </div>-->
-              <!--              <q-img src="dark-logo-text-CiIbURQ-.svg" width="100px" />-->
+  <q-page class="q-pa-md">
+    <q-table :rows="users" :columns="columns" dense wrap-cells flat bordered :rows-per-page-options="[0]"
+             title="Usuarios" :filter="filter">
+      <template v-slot:top-right>
+        <q-btn color="primary" label="Nuevo" @click="userNew" outline no-caps  icon="add_circle_outline" :loading="loading" />
+        <q-input v-model="filter" label="Buscar" dense outlined >
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
+      </template>
+      <template v-slot:body-cell-actions="props">
+        <q-td :props="props">
+          <q-btn-dropdown label="Opciones" no-caps size="10px" dense color="primary">
+            <q-list>
+              <q-item clickable @click="userEdit(props.row)" v-close-popup>
+                <q-item-section avatar>
+                  <q-icon name="edit" />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>Editar</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-item clickable @click="userDelete(props.row.id)" v-close-popup>
+                <q-item-section avatar>
+                  <q-icon name="delete" />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>Eliminar</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-item clickable @click="userEditPassword(props.row)" v-close-popup>
+                <q-item-section avatar>
+                  <q-icon name="edit" />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>Cambiar contraseña</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+        </q-td>
+      </template>
+      <template v-slot:body-cell-role="props">
+        <q-td :props="props">
+          <q-chip :label="props.row.role"
+                  :color="props.row.color"
+                  text-color="white" dense  size="14px"/>
+        </q-td>
+      </template>
+    </q-table>
+    <q-dialog v-model="userDialog" persistent>
+      <q-card>
+        <q-card-section class="q-pb-none row items-center">
+          <div>
+            {{ actionPeriodo }} user
+          </div>
+          <q-space />
+          <q-btn icon="close" flat round dense @click="userDialog = false" />
+        </q-card-section>
+        <q-card-section class="q-pt-none">
+          <q-form @submit="user.id ? userPut() : userPost()">
+            <q-input v-model="user.name" label="Nombre" dense outlined :rules="[val => !!val || 'Campo requerido']" />
+            <q-input v-model="user.username" label="Usuario" dense outlined :rules="[val => !!val || 'Campo requerido']" />
+            <q-input v-model="user.email" label="Email" dense outlined hint="" />
+            <q-input v-model="user.password" label="Contraseña" dense outlined :rules="[val => !!val || 'Campo requerido']" v-if="!user.id" />
+            <q-select v-model="user.role" label="Rol" dense outlined :options="roles" :rules="[val => !!val || 'Campo requerido']" />
+            <div class="text-right" >
+              <q-btn color="negative" label="Cancelar" @click="userDialog = false" no-caps :loading="loading" />
+              <q-btn color="primary" label="Guardar" type="submit" no-caps :loading="loading" class="q-ml-sm" />
             </div>
-            <q-img src="login-bg-BprgzFH_.svg" width="450px" />
-          </div>
-          <div class="col-12 col-md-4 flex flex-center ">
-            <q-form @submit="login" class="q-gutter-md" style="max-width: 400px">
-              <div class="row q-pa-lg">
-                <div class="col-12 flex flex-center">
-                  <q-img src="logo.png" width="70px" style="border-radius: 50%" />
-                </div>
-                <div class="col-12 text-h6 text-bold">Bienvenido al sistema</div>
-                <div class="col-12 text-subtitle1">Inicia sesión para continuar</div>
-                <div class="col-12 q-pt-md">
-                  <label for="username" class="text-bold">Usuario</label>
-                  <q-input outlined v-model="username"
-                           :rules="[val => !!val || 'Este campo es requerido']" />
-                </div>
-                <div class="col-12">
-                  <label for="password" class="text-bold">Contraseña</label>
-                  <q-input outlined v-model="password" :type="showPassword ? 'text' : 'password'"
-                           :rules="[val => !!val || 'Este campo es requerido']" >
-                    <template v-slot:append>
-                      <q-icon :name="showPassword ? 'visibility_off' : 'visibility'" @click="showPassword = !showPassword" />
-                    </template>
-                  </q-input>
-                </div>
-                <div class="col-12 row items-center">
-                  <q-checkbox v-model="remember" label="Recordar usuario" />
-                  <q-space />
-                  <a href="">
-                    <span class="text-caption">¿Olvidaste tu contraseña?</span>
-                  </a>
-                </div>
-                <div class="col-12 q-mt-md">
-                  <q-btn color="blue" label="Iniciar sesión" class="full-width" no-caps :loading="loading" type="submit" />
-                </div>
-                <div class="col-12 q-mt-md">
-                  No tienes cuenta? <a href="">Regístrate</a>
-                </div>
-              </div>
-            </q-form>
-          </div>
-        </div>
-      </q-page>
-    </q-page-container>
-  </q-layout>
+          </q-form>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+  </q-page>
 </template>
-
 <script>
+import moment from 'moment'
 export default {
+  name: 'UsuariosPage',
   data() {
     return {
-      username: '',
-      password: '',
-      remember: false,
+      users: [],
+      user: {},
+      userDialog: false,
       loading: false,
-      showPassword: false
+      actionPeriodo: '',
+      gestiones: [],
+      filter: '',
+      roles: ['Doctor', 'Enfermera', 'Administrativo', 'Secretaria'],
+      columns: [
+        { name: 'actions', label: 'Acciones', align: 'center' },
+        { name: 'name', label: 'Nombre', align: 'left', field: 'name' },
+        { name: 'username', label: 'Usuario', align: 'left', field: 'username' },
+        // { name: 'role', label: 'Rol', align: 'left', field: 'role' },
+        { name: 'email', label: 'Email', align: 'left', field: 'email' }
+      ]
     }
   },
+  mounted() {
+    this.usersGet()
+  },
   methods: {
-    login() {
+    userNew() {
+      this.user = {
+        name: '',
+        email: '',
+        password: '',
+        area_id: 1,
+        username: '',
+        cargo: '',
+        role: 'Area',
+      }
+      this.actionPeriodo = 'Nuevo'
+      this.userDialog = true
+    },
+    usersGet() {
       this.loading = true
-      this.$axios.post('login', {
-        username: this.username,
-        password: this.password
-      }).then(res => {
-        const user = res.data.user
-        const token = res.data.token
-        this.$axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-        this.$store.isLogged = true
-        this.$store.user = user
-        this.$store.permissions = user.permissions
-        localStorage.setItem('tokenMorenada', token)
-        localStorage.setItem('user', JSON.stringify(user))
-        this.$alert.success('Bienvenido ', user.name)
-        this.$router.push('/')
+      this.$axios.get('users').then(res => {
+        this.users = res.data
       }).catch(error => {
         this.$alert.error(error.response.data.message)
       }).finally(() => {
         this.loading = false
       })
+    },
+    gestionGet() {
+      this.loading = true
+      this.$axios.get('gestiones').then(res => {
+        this.gestiones = res.data
+        this.loading = false
+      }).catch(error => {
+        this.$alert.error(error.response.data.message)
+        this.loading = false
+      })
+    },
+    userPost() {
+      this.loading = true
+      this.$axios.post('users', this.user).then(res => {
+        this.usersGet()
+        this.userDialog = false
+        this.$alert.success('Periodo creado')
+      }).catch(error => {
+        this.$alert.error(error.response.data.message)
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+    userPut() {
+      this.loading = true
+      this.$axios.put('users/' + this.user.id, this.user).then(res => {
+        this.usersGet()
+        this.userDialog = false
+        this.$alert.success('Periodo actualizado')
+      }).catch(error => {
+        this.$alert.error(error.response.data.message)
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+    userEditPassword(user) {
+      this.user = { ...user }
+      this.$alert.dialogPrompt('Nueva contraseña', 'Ingrese la nueva contraseña', 'password')
+        .onOk(password => {
+          this.$axios.put('updatePassword/' + user.id, { password }).then(res => {
+            this.usersGet()
+            this.$alert.success('Contraseña actualizada')
+          }).catch(error => {
+            this.$alert.error(error.response.data.message)
+          })
+        })
+    },
+    userEdit(user) {
+      this.user = { ...user }
+      this.actionPeriodo = 'Editar'
+      this.userDialog = true
+    },
+    userDelete(id) {
+      this.$alert.dialog('¿Desea eliminar el user?')
+        .onOk(() => {
+          this.loading = true
+          this.$axios.delete('users/' + id).then(res => {
+            this.usersGet()
+            this.$alert.success('Periodo eliminado')
+          }).catch(error => {
+            this.$alert.error(error.response.data.message)
+          }).finally(() => {
+            this.loading = false
+          })
+        })
     }
   }
 }
