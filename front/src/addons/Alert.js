@@ -33,6 +33,7 @@ export class Alert{
   static dialog (message) {
     return Dialog.create({
       title: 'Confirmación',
+      component: undefined,
       message,
       // position: 'top',
       color: 'positive',

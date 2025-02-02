@@ -156,6 +156,9 @@
   </q-layout>
 </template>
 <script>
+import {Dialog} from "quasar";
+import Icon from "components/Icon.vue";
+
 export default {
   name: 'MainLayout',
   data () {
@@ -180,6 +183,22 @@ export default {
           localStorage.removeItem('tokenEducation')
           this.$router.push('/login')
         })
+      // Dialog.create({
+      //   component: Icon,
+      //
+      //   // props forwarded to your custom component
+      //   componentProps: {
+      //     text: 'something',
+      //     persistent: true,
+      //     // ...more..props...
+      //   }
+      // }).onOk(() => {
+      //   console.log('OK')
+      // }).onCancel(() => {
+      //   console.log('Cancel')
+      // }).onDismiss(() => {
+      //   console.log('Called on OK or Cancel')
+      // })
     },
     toggleLeftDrawer () {
       this.leftDrawerOpen = !this.leftDrawerOpen
