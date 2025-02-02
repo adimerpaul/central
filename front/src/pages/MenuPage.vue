@@ -12,8 +12,16 @@
 </template>
 
 <script setup>
-const lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi.'
+import { onMounted, getCurrentInstance } from 'vue';
+
+const instance = getCurrentInstance();
+
+onMounted(() => {
+  const alert = instance.appContext.config.globalProperties.$alert;
+  // alert.success('Bienvenido al sistema', 'Acceso correcto');
+});
 </script>
+
 <style>
 .fondo {
   background-image: url('./logo_fnd.png');

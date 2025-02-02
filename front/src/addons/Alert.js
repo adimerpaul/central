@@ -1,16 +1,23 @@
 import {Dialog, Notify} from 'quasar'
 
 export class Alert{
-  static success(message) {
+  static success(message,subTitle = '') {
     Notify.create({
       progress: true,
-      color: 'positive',
+      color: 'white',
+      textColor: 'black',
       position: 'top',
       message,
-      // icon: 'check',
+      caption: subTitle,
       timeout: 1500,
-      actions: [{icon: 'close', color: 'white', size: 'sm'}]
-    })
+      icon: 'check_circle',
+      iconColor: 'positive',
+      actions: [
+        { icon: 'close', color: 'black', round: true, size: 'xs' }
+      ],
+      progressClass: 'bg-positive',
+      classes: 'bg-white text-black text-bold left-green-border'
+    });
   }
   static error(message) {
     Notify.create({

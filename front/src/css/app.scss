@@ -8,3 +8,10 @@
 //* {
 //  font-family: 'benton';
 //}
+
+//background-color: white; border-left: 5px solid green; padding: 10px;
+.left-green-border {
+  background-color: white;
+  border-left: 5px solid $positive;
+  //padding: 10px;
+}

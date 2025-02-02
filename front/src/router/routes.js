@@ -3,7 +3,10 @@ const routes = [
     path: '/',
     component: () => import('layouts/MenuLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/MenuPage.vue') }
+      { path: '', component: () => import('pages/MenuPage.vue'), meta: { requiresAuth: true } },
+      { path: 'usuarios', component: () => import('pages/usuarios/Usuarios.vue'), meta: { requiresAuth: true } },
+      { path: 'fraternos', component: () => import('pages/fraternos/Fraternos.vue'), meta: { requiresAuth: true } },
+      { path: 'pagos', component: () => import('pages/pagos/Pagos.vue'), meta: { requiresAuth: true } },
     ]
   },
   {

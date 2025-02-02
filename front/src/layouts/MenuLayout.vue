@@ -23,22 +23,23 @@
             <q-btn no-caps icon="o_notifications" />
             <q-btn no-caps >
 <!--              <q cambiar icono-->
-              <q-img :src="$url + '../images/' + $store.user.avatar" alt="Logo" width="30px"
+              <q-img :src="$url + '../images/' + $store.user?.avatar" alt="Logo" width="30px"
                       style="border-radius: 50%"
+                     v-if="$store.user?.avatar"
               />
               <q-menu>
                 <q-list>
                   <q-item clickable>
                     <q-item-section avatar>
 <!--                      <q-icon name="account_circle" />-->
-                      <q-img :src="$url + '../images/' + $store.user.avatar" alt="Logo" width="35px" />
+                      <q-img :src="$url + '../images/' + $store.user?.avatar" alt="Logo" width="35px" v-if="$store.user?.avatar" />
                     </q-item-section>
                     <q-item-section>
                       <q-item-label>
-                        {{ $store.user.name }}
+                        {{ $store.user?.name }}
                       </q-item-label>
 <!--                      <q-item-label caption>-->
-<!--                        {{ $store.user.role }}-->
+<!--                        {{ $store.user?.role }}-->
 <!--                      </q-item-label>-->
                     </q-item-section>
                   </q-item>
@@ -70,7 +71,7 @@
         <q-item>
           <q-item-section avatar>
 <!--            <q-icon name="account_circle" />-->
-            <q-img :src="$url + '../images/' + $store.user.avatar" alt="Logo" width="35px" />
+            <q-img :src="$url + '../images/' + $store.user?.avatar" alt="Logo" width="35px" v-if="$store.user?.avatar" />
           </q-item-section>
           <q-item-section>
             <!--            <pre>-->
@@ -92,29 +93,52 @@
           </q-item-section>
         </q-item>
         <q-separator  class="bg-white" inset />
-        <q-item-label header class="text-white">
+        <div class="text-white q-pa-xs text-center text-bold">
           Opciones
-        </q-item-label>
-
-        <!--        <EssentialLink-->
-        <!--          v-for="link in linksList"-->
-        <!--          :key="link.title"-->
-        <!--          v-bind="link"-->
-        <!--        />-->
-        <q-item v-for="link in linksList" :key="link.title" clickable :to="link.link" exact
-                class="text-grey"
-                active-class="menu"
-        >
-          <q-item-section avatar>
-            <q-icon :name="$route.path === link.link ? 'o_' + link.icon : link.icon"
-                    :class="$route.path === link.link ? 'text-white' : ''"/>
-          </q-item-section>
-          <q-item-section>
-            <q-item-label :class="$route.path === link.link ? 'text-white text-bold' : ''">
-              {{ link.title }}
-            </q-item-label>
-          </q-item-section>
-        </q-item>
+        </div>
+<!--        <pre>{{$store.permissions}}</pre>-->
+<!--        [-->
+<!--        {-->
+<!--        "id": 1,-->
+<!--        "name": "Usuarios",-->
+<!--        "guard_name": "web",-->
+<!--        "created_at": "2025-02-02T12:01:36.000000Z",-->
+<!--        "updated_at": "2025-02-02T12:01:36.000000Z",-->
+<!--        "pivot": {-->
+<!--        "model_type": "App\\Models\\User",-->
+<!--        "model_id": 1,-->
+<!--        "permission_id": 1-->
+<!--        }-->
+<!--        },-->
+<!--        {-->
+<!--        "id": 2,-->
+<!--        "name": "Fraterno",-->
+<!--        "guard_name": "web",-->
+<!--        "created_at": "2025-02-02T12:01:36.000000Z",-->
+<!--        "updated_at": "2025-02-02T12:01:36.000000Z",-->
+<!--        "pivot": {-->
+<!--        "model_type": "App\\Models\\User",-->
+<!--        "model_id": 1,-->
+<!--        "permission_id": 2-->
+<!--        }-->
+<!--        },-->
+        <template v-for="link in linksList" :key="link.title">
+          <q-item  clickable :to="link.link" exact
+                  class="text-grey"
+                  active-class="menu"
+                   v-if="link.can === 'Todos' || $store.permissions.some(permission => permission.name === link.can)"
+          >
+            <q-item-section avatar>
+              <q-icon :name="$route.path === link.link ? 'o_' + link.icon : link.icon"
+                      :class="$route.path === link.link ? 'text-white' : ''"/>
+            </q-item-section>
+            <q-item-section>
+              <q-item-label :class="$route.path === link.link ? 'text-white text-bold' : ''">
+                {{ link.title }}
+              </q-item-label>
+            </q-item-section>
+          </q-item>
+        </template>
         <q-item clickable class="text-red" @click="logout">
           <q-item-section avatar>
             <q-icon name="exit_to_app" />
@@ -138,11 +162,10 @@ export default {
     return {
       leftDrawerOpen: false,
       linksList: [
-        {title: 'Principal', icon: 'home', link: '/'},
-        {title: 'Usuarios', icon: 'account_circle', link: '/usuarios'},
-        {title: 'Pacientes', icon: 'people', link: '/pacientes'},
-        {title: 'Productos', icon: 'shopping_cart', link: '/productos'},
-        {title: 'Venta', icon: 'point_of_sale', link: '/venta'},
+        { title: 'Principal', icon: 'home', link: '/', can: 'Todos' },
+        { title: 'Usuarios', icon: 'account_circle', link: '/usuarios', can: 'Usuarios' },
+        { title: 'Fraternos', icon: 'people', link: '/fraternos', can: 'Fraternos' },
+        { title: 'Pagos', icon: 'payment', link: '/pagos', can: 'Pagos' },
       ]
     }
   },

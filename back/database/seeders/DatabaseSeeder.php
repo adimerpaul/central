@@ -21,9 +21,9 @@ class DatabaseSeeder extends Seeder
 //            'email' => 'test@example.com',
 //        ]);
 
-        $registerUsers = Permission::create(['name' => 'Registro de usuarios']);
-        $registerFraterno = Permission::create(['name' => 'Registro de fraterno']);
-        $registerPayments = Permission::create(['name' => 'Registro de pagos']);
+        $registerUsers = Permission::create(['name' => 'Usuarios']);
+        $registerFraterno = Permission::create(['name' => 'Fraternos']);
+        $registerPayments = Permission::create(['name' => 'Pagos']);
 
         $user = User::create([
             'name' => 'Administrador',
