@@ -15,6 +15,9 @@
           <div class="col-6 col-md-2 flex flex-center">
             <q-btn label="Pago" color="green" no-caps icon="add_circle_outline" to="/pagos/add" />
           </div>
+          <div class="col-12">
+            <pre>{{ pagos }}</pre>
+          </div>
         </div>
       </q-card-section>
     </q-card>
@@ -29,9 +32,27 @@ export default {
     return {
       fechaInicio: moment().format("YYYY-MM-DD"),
       fechaFin: moment().format("YYYY-MM-DD"),
+      pagos: [],
     }
   },
+  mounted() {
+    this.getPagos();
+  },
   methods: {
+    getPagos() {
+      this.$axios.get('pagos', {
+        params: {
+          fechaInicio: this.fechaInicio,
+          fechaFin: this.fechaFin,
+        }
+      })
+        .then(response => {
+          this.pagos = response.data;
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
   }
 }
 </script>
