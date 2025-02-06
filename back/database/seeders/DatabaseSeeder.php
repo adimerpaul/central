@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 
 class DatabaseSeeder extends Seeder
@@ -12,14 +13,7 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      */
-    public function run(): void
-    {
-        // User::factory(10)->create();
-
-//        User::factory()->create([
-//            'name' => 'Test User',
-//            'email' => 'test@example.com',
-//        ]);
+    public function run(): void{
 
         $registerUsers = Permission::create(['name' => 'Usuarios']);
         $registerFraterno = Permission::create(['name' => 'Fraternos']);
@@ -37,7 +31,13 @@ class DatabaseSeeder extends Seeder
         $user->givePermissionTo($registerUsers);
         $user->givePermissionTo($registerFraterno);
         $user->givePermissionTo($registerPayments);
-
-        User::factory(10)->create();
+        $sqlFile = database_path('seeders/users_202502060454.sql');
+        if (file_exists($sqlFile)) {
+            $sql = file_get_contents($sqlFile);
+            DB::unprepared($sql);
+            $this->command->info('Users table seeded');
+        }else{
+            $this->command->info('Users table not seeded');
+        }
     }
 }

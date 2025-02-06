@@ -166,7 +166,7 @@ export default {
       leftDrawerOpen: false,
       linksList: [
         { title: 'Principal', icon: 'home', link: '/', can: 'Todos' },
-        { title: 'Usuarios', icon: 'account_circle', link: '/usuarios', can: 'Usuarios' },
+        { title: 'Fraternos', icon: 'account_circle', link: '/usuarios', can: 'Usuarios' },
         // { title: 'Fraternos', icon: 'people', link: '/fraternos', can: 'Fraternos' },
         { title: 'Pagos', icon: 'payment', link: '/pagos', can: 'Pagos' },
       ]

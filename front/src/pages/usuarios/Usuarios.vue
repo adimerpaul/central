@@ -94,8 +94,9 @@ export default {
         { name: 'actions', label: 'Acciones', align: 'center' },
         { name: 'name', label: 'Nombre', align: 'left', field: 'name' },
         { name: 'username', label: 'Usuario', align: 'left', field: 'username' },
-        // { name: 'role', label: 'Rol', align: 'left', field: 'role' },
-        { name: 'email', label: 'Email', align: 'left', field: 'email' }
+        { name: 'codigo', label: 'Codigo', align: 'left', field: 'codigo' },
+        { name: 'phone', label: 'Telefono', align: 'left', field: 'phone' },
+        // { name: 'email', label: 'Email', align: 'left', field: 'email' }
       ]
     }
   },
