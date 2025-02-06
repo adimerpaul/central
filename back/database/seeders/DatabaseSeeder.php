@@ -41,15 +41,6 @@ class DatabaseSeeder extends Seeder
             $this->command->info('Users table not seeded');
         }
 
-//        protected $fillable = ['nombre', 'descripcion', 'tipo', 'monto', 'estado'];
-//        [23:51, 31/1/2025] Omar Arevalo: Conceptos de cobro predefinido:
-//- cuota misal
-//        - cuota velada
-//        - aporte extraordinario
-//        [23:51, 31/1/2025] Omar Arevalo: Llamadas de atención predefinida:
-//- llamada de atención
-//        - expulsión de recorrido
-//        - invitación a ensayo danza
 
         Concepto::create(['nombre' => 'Cuota Misal', 'descripcion' => 'Cuota de misal', 'tipo' => 'Cobro', 'monto' => 100, 'estado' => 'Activo']);
         Concepto::create(['nombre' => 'Cuota Velada', 'descripcion' => 'Cuota de velada', 'tipo' => 'Cobro', 'monto' => 50, 'estado' => 'Activo']);

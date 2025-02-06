@@ -1,7 +1,8 @@
-import { boot } from 'quasar/wrappers'
+import {boot} from 'quasar/wrappers'
 import axios from 'axios'
 import {Alert} from "src/addons/Alert";
 import {useCounterStore} from "stores/example-store";
+import moment from "moment";
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;
 // If any client changes this (global) instance, it might be a
@@ -18,6 +19,12 @@ export default boot(({ app, router }) => {
   app.config.globalProperties.$store = useCounterStore()
   app.config.globalProperties.$url = import.meta.env.VITE_API_BACK
   app.config.globalProperties.$filters = {
+    dateDmYHis (value) {
+      const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Set', 'Oct', 'Nov', 'Dic']
+      const mes = meses[moment(String(value)).format('MM') - 1]
+      if (!value) return ''
+      return moment(String(value)).format('DD') + ' ' + mes + ' ' + moment(String(value)).format('YYYY') + ' ' + moment(String(value)).format('hh:mm A')
+    },
     date: (value) => {
       if (!value) return ''
       return new Date(value).toLocaleDateString()
@@ -26,7 +33,7 @@ export default boot(({ app, router }) => {
       if (!value) return ''
       return new Date(value).toLocaleTimeString()
     },
-    textUpper: (value) => {
+    textCapitalize: (value) => {
       if (!value) return ''
       const lower = value.toLowerCase()
       return lower.charAt(0).toUpperCase() + lower.slice(1)

@@ -20,19 +20,6 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-//$table->string('name')->nullable();
-//$table->string('gestion')->nullable();
-//$table->string('bloque')->nullable();
-//$table->string('codigo')->nullable();
-//$table->string('avatar')->nullable();
-//$table->string('email')->nullable()->unique();
-//$table->string('username')->nullable()->unique();
-//$table->string('phone')->nullable()->unique();
-//$table->timestamp('email_verified_at')->nullable();
-//$table->string('password');
-//$table->rememberToken();
-//$table->softDeletes();
-//$table->timestamps();
     protected $fillable = [
         'name',
         'gestion',
@@ -55,6 +42,10 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'email_verified_at',
+        'created_at',
+        'updated_at',
+        'deleted_at',
     ];
 
     /**

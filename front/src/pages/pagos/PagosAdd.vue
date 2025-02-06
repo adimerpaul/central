@@ -80,6 +80,7 @@ export default {
           const user = this.users.find(user => user.id === this.user);
           const monto = this.concepto.tipo === 'Cobro' ? this.concepto.monto : -this.concepto.monto;
           this.$alert.success(`Pago registrado `,`${user.name.split('|')[0]} Bs. ${monto}`);
+          this.user = '';
         })
         .catch(error => {
           console.log(error);
