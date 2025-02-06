@@ -7,6 +7,7 @@ const routes = [
       { path: 'usuarios', component: () => import('pages/usuarios/Usuarios.vue'), meta: { requiresAuth: true } },
       { path: 'fraternos', component: () => import('pages/fraternos/Fraternos.vue'), meta: { requiresAuth: true } },
       { path: 'pagos', component: () => import('pages/pagos/Pagos.vue'), meta: { requiresAuth: true } },
+      { path: 'pagos/add', component: () => import('pages/pagos/PagosAdd.vue'), meta: { requiresAuth: true } },
     ]
   },
   {

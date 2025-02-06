@@ -15,12 +15,12 @@
         />
 
         <q-toolbar-title>
-          <q-btn no-caps flat dense round icon="o_search" />
+<!--          <q-btn no-caps flat dense round icon="o_search" />-->
         </q-toolbar-title>
         <div>
           <!--          Quasar v{{ $q.version }}-->
           <q-btn-group flat>
-            <q-btn no-caps icon="o_notifications" />
+<!--            <q-btn no-caps icon="o_notifications" />-->
             <q-btn no-caps >
 <!--              <q cambiar icono-->
               <q-img :src="$url + '../images/' + $store.user?.avatar" alt="Logo" width="30px"

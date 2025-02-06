@@ -1,43 +1,37 @@
 <template>
-  <q-page>
-    asas
+  <q-page class="q-pa-xs">
+    <q-card flat bordered>
+      <q-card-section>
+        <div class="row">
+          <div class="col-6 col-md-2">
+            <q-input v-model="fechaInicio" label="Fecha Inicio" type="date" outlined dense />
+          </div>
+          <div class="col-6 col-md-2">
+            <q-input v-model="fechaFin" label="Fecha Fin" type="date" outlined dense />
+          </div>
+          <div class="col-6 col-md-2 flex flex-center">
+            <q-btn label="Buscar" color="primary" no-caps icon="search" />
+          </div>
+          <div class="col-6 col-md-2 flex flex-center">
+            <q-btn label="Pago" color="green" no-caps icon="add_circle_outline" to="/pagos/add" />
+          </div>
+        </div>
+      </q-card-section>
+    </q-card>
   </q-page>
 </template>
 
 <script>
+import moment from "moment";
+
 export default {
   data() {
     return {
-      username: '',
-      password: '',
-      remember: false,
-      loading: false,
-      showPassword: false
+      fechaInicio: moment().format("YYYY-MM-DD"),
+      fechaFin: moment().format("YYYY-MM-DD"),
     }
   },
   methods: {
-    login() {
-      this.loading = true
-      this.$axios.post('login', {
-        username: this.username,
-        password: this.password
-      }).then(res => {
-        const user = res.data.user
-        const token = res.data.token
-        this.$axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-        this.$store.isLogged = true
-        this.$store.user = user
-        this.$store.permissions = user.permissions
-        localStorage.setItem('tokenMorenada', token)
-        localStorage.setItem('user', JSON.stringify(user))
-        this.$alert.success('Bienvenido ', user.name)
-        this.$router.push('/')
-      }).catch(error => {
-        this.$alert.error(error.response.data.message)
-      }).finally(() => {
-        this.loading = false
-      })
-    }
   }
 }
 </script>
