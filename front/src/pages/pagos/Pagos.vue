@@ -3,17 +3,65 @@
     <q-card flat bordered>
       <q-card-section>
         <div class="row">
-          <div class="col-6 col-md-2">
+          <div class="col-6 col-md-2 q-pa-xs">
             <q-input v-model="fechaInicio" label="Fecha Inicio" type="date" outlined dense />
           </div>
-          <div class="col-6 col-md-2">
+          <div class="col-6 col-md-2 q-pa-xs">
             <q-input v-model="fechaFin" label="Fecha Fin" type="date" outlined dense />
           </div>
-          <div class="col-6 col-md-2 flex flex-center">
+          <div class="col-6 col-md-2 q-pa-xs flex flex-center">
             <q-btn label="Buscar" color="primary" no-caps icon="search" :loading="loading" @click="getPagos" />
           </div>
-          <div class="col-6 col-md-2 flex flex-center">
+          <div class="col-6 col-md-2 q-pa-xs flex flex-center">
             <q-btn label="Pago" color="green" no-caps icon="add_circle_outline" to="/pagos/add" :loading="loading" />
+          </div>
+          <div class="col-6 col-md-4 q-pa-xs text-right">
+            <q-btn label="Exportar Excel" color="green" no-caps icon="fa-solid fa-file-excel" :loading="loading" @click="exportExcel" />
+          </div>
+          <div class="col-12 col-md-4 q-pa-xs">
+            <q-card flat bordered>
+              <q-card-section class="q-pa-none">
+                <q-item class="bg-green">
+                  <q-item-section avatar>
+                    <q-icon name="monetization_on" size="50px" color="white" />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label caption class="text-white">Ganacia</q-item-label>
+                    <q-item-label  class="text-white text-h4">{{totalActivo}} Bs</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-card-section>
+            </q-card>
+          </div>
+          <div class="col-12 col-md-4 q-pa-xs">
+            <q-card flat bordered>
+              <q-card-section class="q-pa-none">
+                <q-item class="bg-red">
+                  <q-item-section avatar>
+                    <q-icon name="delete" size="50px" color="white" />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label caption class="text-white">Anulado</q-item-label>
+                    <q-item-label  class="text-white text-h4">{{totalAnulados}} Bs</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-card-section>
+            </q-card>
+          </div>
+          <div class="col-12 col-md-4 q-pa-xs">
+            <q-card flat bordered>
+              <q-card-section class="q-pa-none">
+                <q-item class="bg-primary">
+                  <q-item-section avatar>
+                    <q-icon name="compare_arrows" size="50px" color="white" />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label caption class="text-white">Cantidad</q-item-label>
+                    <q-item-label  class="text-white text-h4">{{pagos.length}} Pagos</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-card-section>
+            </q-card>
           </div>
           <div class="col-12">
             <q-markup-table dense flat bordered>
@@ -32,14 +80,19 @@
                 <tr v-for="pago in pagos" :key="pago.id">
                   <td>
                     <q-btn-dropdown color="green" label="Opciones" no-caps size="10px" dense :loading="loading">
-                      <q-item clickable v-ripple style="width: 150px" v-close-popup v-if="pago.estado === 'Activo'">
+                      <q-item clickable v-ripple style="width: 220px" v-close-popup v-if="pago.estado === 'Activo'">
                         <q-item-section>
                           <q-btn dense label="Anular" no-caps class="full-width" color="negative" icon="delete" @click="anularPago(pago)" />
                         </q-item-section>
                       </q-item>
-                      <q-item clickable v-ripple style="width: 150px" v-close-popup>
+                      <q-item clickable v-ripple style="width: 220px" v-close-popup>
                         <q-item-section>
                           <q-btn dense icon="print" label="Imprimir" no-caps class="full-width" color="primary"  @click="printPago(pago)" />
+                        </q-item-section>
+                      </q-item>
+                      <q-item clickable v-ripple style="width: 220px" v-close-popup>
+                        <q-item-section>
+                          <q-btn dense icon="fa-brands fa-whatsapp" label="Enviar por WhatsApp" no-caps class="full-width" color="green"  @click="sendWhatsapp(pago)" />
                         </q-item-section>
                       </q-item>
                     </q-btn-dropdown>
@@ -149,6 +202,7 @@
 <script>
 import moment from "moment";
 import Icon from "components/Icon.vue";
+import {Excel} from "src/addons/Excel.js";
 
 export default {
   data() {
@@ -163,6 +217,31 @@ export default {
     this.getPagos();
   },
   methods: {
+    exportExcel() {
+      let data = [{
+        columns: [
+          // {label: "ID", value: "id"},
+          {label: "Fraterno", value: "user.name"},
+          {label: "Descripción", value: "descripcion"},
+          {label: "Estado", value: "estado"},
+          {label: "Monto", value: "monto"},
+          {label: "Fecha", value: "fecha_pago"},
+          {label: "Usuario", value: (row) => row.user_pago.name},
+        ],
+        content: this.pagos
+      }]
+      Excel.export(data,'Ventas')
+    },
+    sendWhatsapp(pago) {
+      let urlBack = this.$url;
+      urlBack = urlBack.replace('api/', '');
+      const url = `${urlBack}pagos/${pago.codigo}/print`;
+
+      let message = `Hola ${pago.user.name}, te envio tu comprobante de pago. ${url}`;
+      let phone = pago.user.phone;
+
+      window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${message}`, '_blank');
+    },
     printPago(pago) {
       let urlBack = this.$url;
       urlBack = urlBack.replace('api/', '');
@@ -202,6 +281,14 @@ export default {
           this.loading = false;
         });
     }
-  }
+  },
+  computed: {
+    totalActivo() {
+      return this.pagos.filter(pago => pago.estado === 'Activo').reduce((acc, pago) => acc + pago.monto, 0);
+    },
+    totalAnulados() {
+      return this.pagos.filter(pago => pago.estado === 'Anulado').reduce((acc, pago) => acc + pago.monto, 0);
+    }
+  },
 }
 </script>
