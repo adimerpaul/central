@@ -101,7 +101,7 @@ export default {
     usersGet() {
       this.$axios.get('users')
         .then(response => {
-          this.users = response.data.map(user => ({ id: user.id, name: user.name + '|' + user.id }));
+          this.users = response.data.map(user => ({ id: user.id, name: user.name + '|' + user.codigo }));
           this.usersAll = this.users;
         })
         .catch(error => {

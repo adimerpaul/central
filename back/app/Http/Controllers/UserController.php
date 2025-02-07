@@ -40,7 +40,7 @@ class UserController extends Controller{
             ->first();
     }
     function index(){
-        return User::where('id', '!=', 2)
+        return User::where('id', '!=', 1)
             ->orderBy('id', 'desc')
             ->with('permissions')
             ->get();
