@@ -18,6 +18,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/users/{user}', [App\Http\Controllers\UserController::class, 'update']);
     Route::delete('/users/{user}', [App\Http\Controllers\UserController::class, 'destroy']);
     Route::put('/updatePassword/{user}', [App\Http\Controllers\UserController::class, 'updatePassword']);
+//    permissions
+    Route::get('/permissions', [App\Http\Controllers\UserController::class, 'permissions']);
+//    permissions
+    Route::post('/permissions/{user}', [App\Http\Controllers\UserController::class, 'permissionsStore']);
+
 
     Route::get('/conceptos', [App\Http\Controllers\ConceptoController::class, 'index']);
 

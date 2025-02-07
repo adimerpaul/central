@@ -38,6 +38,14 @@
                   <q-item-label>Cambiar contraseña</q-item-label>
                 </q-item-section>
               </q-item>
+              <q-item clickable @click="permisosShow(props.row)" v-close-popup>
+                <q-item-section avatar>
+                  <q-icon name="edit" />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>Permisos</q-item-label>
+                </q-item-section>
+              </q-item>
             </q-list>
           </q-btn-dropdown>
         </q-td>
@@ -65,13 +73,43 @@
             <q-input v-model="user.username" label="Usuario" dense outlined :rules="[val => !!val || 'Campo requerido']" />
             <q-input v-model="user.email" label="Email" dense outlined hint="" />
             <q-input v-model="user.password" label="Contraseña" dense outlined :rules="[val => !!val || 'Campo requerido']" v-if="!user.id" />
-            <q-select v-model="user.role" label="Rol" dense outlined :options="roles" :rules="[val => !!val || 'Campo requerido']" />
+            <q-input v-model="user.phone" label="Telefono" dense outlined hint="" />
+            <q-input v-model="user.codigo" label="Codigo" dense outlined hint="" />
+            <q-input v-model="user.gestion" label="Gestion" dense outlined hint="" />
+            <q-input v-model="user.bloque" label="Bloque" dense outlined hint="" />
             <div class="text-right" >
               <q-btn color="negative" label="Cancelar" @click="userDialog = false" no-caps :loading="loading" />
               <q-btn color="primary" label="Guardar" type="submit" no-caps :loading="loading" class="q-ml-sm" />
             </div>
           </q-form>
         </q-card-section>
+      </q-card>
+    </q-dialog>
+<!--    dialogPermisos-->
+    <q-dialog v-model="dialogPermisos" persistent>
+      <q-card>
+        <q-card-section class="q-pb-none row items-center text-bold">
+            Permisos
+          <q-space />
+          <q-btn icon="close" flat round dense @click="dialogPermisos = false" />
+        </q-card-section>
+        <q-card-section class="q-pt-none">
+          <q-list>
+            <q-item v-for="permiso in permissions" :key="permiso.id">
+              <q-item-section>
+                <q-item-label>{{ permiso.name }}</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-toggle v-model="permiso.checked" />
+              </q-item-section>
+            </q-item>
+          </q-list>
+<!--          <pre>{{ user }}</pre>-->
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn color="negative" label="Cancelar" @click="dialogPermisos = false" no-caps :loading="loading" />
+          <q-btn color="primary" label="Guardar" @click="permisosPost" no-caps :loading="loading" />
+        </q-card-actions>
       </q-card>
     </q-dialog>
   </q-page>
@@ -97,13 +135,35 @@ export default {
         { name: 'codigo', label: 'Codigo', align: 'left', field: 'codigo' },
         { name: 'phone', label: 'Telefono', align: 'left', field: 'phone' },
         // { name: 'email', label: 'Email', align: 'left', field: 'email' }
-      ]
+      ],
+      permissions: [],
+      dialogPermisos: false
     }
   },
   mounted() {
     this.usersGet()
+    this.permissionsGet()
   },
   methods: {
+    permisosPost() {
+      this.loading = true
+      const permissions = this.permissions.filter(p => p.checked).map(p => p.id)
+      this.$axios.post('permissions/' + this.user.id, { permissions }).then(res => {
+        this.dialogPermisos = false
+        this.$alert.success('Permisos actualizados')
+      }).catch(error => {
+        this.$alert.error(error.response.data.message)
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+    permissionsGet() {
+      this.$axios.get('permissions').then(res => {
+        this.permissions = res.data
+      }).catch(error => {
+        this.$alert.error(error.response.data.message)
+      })
+    },
     userNew() {
       this.user = {
         name: '',
@@ -159,6 +219,13 @@ export default {
         this.$alert.error(error.response.data.message)
       }).finally(() => {
         this.loading = false
+      })
+    },
+    permisosShow(user) {
+      this.dialogPermisos = true
+      this.user = { ...user }
+      this.permissions.forEach(permiso => {
+        permiso.checked = user.permissions.some(p => p.id === permiso.id)
       })
     },
     userEditPassword(user) {

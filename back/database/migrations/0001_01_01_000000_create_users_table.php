@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('gestion')->nullable();
             $table->string('bloque')->nullable();
             $table->string('codigo')->nullable();
-            $table->string('avatar')->nullable();
+            $table->string('avatar')->nullable()->default('default.png');
             $table->string('email')->nullable()->unique();
             $table->string('username')->nullable()->unique();
             $table->string('phone')->nullable();

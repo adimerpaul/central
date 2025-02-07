@@ -4,8 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Permission;
 
 class UserController extends Controller{
+    function permissionsStore(Request $request, $id){
+        $user = User::find($id);
+        $user->syncPermissions($request->permissions);
+        return $user;
+    }
     function login(Request $request){
         $credentials = $request->only('username', 'password');
         $user = User::where('username', $credentials['username'])
@@ -34,8 +40,9 @@ class UserController extends Controller{
             ->first();
     }
     function index(){
-        return User::where('id', '!=', 1)
+        return User::where('id', '!=', 2)
             ->orderBy('id', 'desc')
+            ->with('permissions')
             ->get();
     }
     function update(Request $request, $id){
@@ -62,5 +69,8 @@ class UserController extends Controller{
     }
     function destroy($id){
         return User::destroy($id);
+    }
+    function permissions(Request $request){
+        return Permission::all();
     }
 }
