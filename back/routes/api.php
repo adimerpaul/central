@@ -22,5 +22,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/conceptos', [App\Http\Controllers\ConceptoController::class, 'index']);
 
     Route::get('/pagos', [App\Http\Controllers\PagoConceptoController::class, 'index']);
+    Route::put('/pagos/{pago}', [App\Http\Controllers\PagoConceptoController::class, 'update']);
     Route::post('/pagoconcepto', [App\Http\Controllers\PagoConceptoController::class, 'store']);
 });

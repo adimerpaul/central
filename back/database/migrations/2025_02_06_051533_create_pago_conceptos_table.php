@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('descripcion');
             $table->integer('monto');
             $table->string('estado');
+            $table->string('codigo');
             $table->date('fecha_pago');
             $table->string('hora_pago');
             $table->foreign('user_id')->references('id')->on('users');

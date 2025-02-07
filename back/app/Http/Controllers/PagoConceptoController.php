@@ -22,6 +22,7 @@ class PagoConceptoController extends Controller{
         $user = $request->user();
         $pagoConcepto = new PagoConcepto();
         $concepto = Concepto::find($request->concepto_id);
+        $pagoConcepto->codigo = substr(md5(time()), 0, 32);
         $pagoConcepto->user_id = $request->user_id;
         $pagoConcepto->user_pago_id = $user->id;
         $pagoConcepto->concepto_id = $request->concepto_id;
@@ -33,6 +34,12 @@ class PagoConceptoController extends Controller{
         $pagoConcepto->hora_pago = date('H:i:s');
         $pagoConcepto->save();
 
+        return $pagoConcepto;
+    }
+    function update(Request $request, $id){
+        $pagoConcepto = PagoConcepto::find($id);
+        $pagoConcepto->estado = $request->estado;
+        $pagoConcepto->save();
         return $pagoConcepto;
     }
 }

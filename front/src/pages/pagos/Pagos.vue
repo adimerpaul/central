@@ -31,8 +31,18 @@
               <tbody>
                 <tr v-for="pago in pagos" :key="pago.id">
                   <td>
-<!--                    <q-btn flat dense icon="edit" color="primary" @click="editarPago(pago)" />-->
-<!--                    <q-btn flat dense icon="delete" color="negative" @click="eliminarPago(pago)" />-->
+                    <q-btn-dropdown color="green" label="Opciones" no-caps size="10px" dense :loading="loading">
+                      <q-item clickable v-ripple style="width: 150px" v-close-popup v-if="pago.estado === 'Activo'">
+                        <q-item-section>
+                          <q-btn dense label="Anular" no-caps class="full-width" color="negative" icon="delete" @click="anularPago(pago)" />
+                        </q-item-section>
+                      </q-item>
+                      <q-item clickable v-ripple style="width: 150px" v-close-popup>
+                        <q-item-section>
+                          <q-btn dense icon="print" label="Imprimir" no-caps class="full-width" color="primary"  @click="printPago(pago)" />
+                        </q-item-section>
+                      </q-item>
+                    </q-btn-dropdown>
                   </td>
                   <td>
                     <div style="width: 100px; white-space: normal; overflow-wrap: break-word;line-height: 0.9;">
@@ -138,6 +148,7 @@
 
 <script>
 import moment from "moment";
+import Icon from "components/Icon.vue";
 
 export default {
   data() {
@@ -152,6 +163,28 @@ export default {
     this.getPagos();
   },
   methods: {
+    printPago(pago) {
+      let urlBack = this.$url;
+      urlBack = urlBack.replace('api/', '');
+      const url = `${urlBack}pagos/${pago.codigo}/print`;
+      window.open(url, '_blank');
+    },
+    anularPago(pago) {
+      this.$alert.dialog(
+        'Seguro que desea anular el pago?',
+        'Anular Pago',
+      ).onOk(() => {
+        this.$axios.put(`pagos/${pago.id}`, {
+          estado: 'Anulado'
+        })
+          .then(response => {
+            this.getPagos();
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      });
+    },
     getPagos() {
       this.loading = true;
       this.$axios.get('pagos', {

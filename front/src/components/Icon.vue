@@ -1,47 +1,57 @@
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide">
-    <q-card class="q-dialog-plugin">
-      <!--
-        ...content
-        ... use q-card-section for it?
-      -->
+    <q-card class="q-dialog-plugin q-pa-lg text-center">
+      <!-- Icono de verificación -->
+<!--      <q-icon name="check_circle" color="green" size="xl" class="q-mb-md" />-->
+<!--      icon de confimacion-->
+      <q-icon :name="icon" :color="color" size="120px" class="q-mb-md" />
+      <!-- Mensaje principal -->
+      <div class="text-h6 text-bold">
+        {{ title }}
+      </div>
 
-      <!-- buttons example -->
-      <q-card-actions align="right">
-        <q-btn color="primary" label="OK" @click="onOKClick" />
-        <q-btn color="primary" label="Cancel" @click="onDialogCancel" />
-      </q-card-actions>
+      <!-- Mensaje secundario -->
+      <div class="text-subtitle1 text-grey-7 q-mt-sm">
+        {{ message }}
+      </div>
+
+      <!-- Botón de acción -->
+      <q-card-section>
+        <div class="row">
+          <div class="col-6">
+            <q-btn color="red" label="Cancelar" @click="onDialogHide" rounded unelevated class="full-width text-white" no-caps/>
+          </div>
+          <div class="col-6">
+            <q-btn color="green" label="OK" @click="onOKClick" rounded unelevated class="full-width text-white" no-caps />
+          </div>
+        </div>
+      </q-card-section>
     </q-card>
   </q-dialog>
 </template>
 
 <script setup>
 import { useDialogPluginComponent } from 'quasar'
-
-const props = defineProps({
-  // ...your custom props
-})
-
 defineEmits([
   // REQUIRED; need to specify some events that your
   // component will emit through useDialogPluginComponent()
   ...useDialogPluginComponent.emits
 ])
-
-const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent()
-// dialogRef      - Vue ref to be applied to QDialog
-// onDialogHide   - Function to be used as handler for @hide on QDialog
-// onDialogOK     - Function to call to settle dialog with "ok" outcome
-//                    example: onDialogOK() - no payload
-//                    example: onDialogOK({ /*...*/ }) - with payload
-// onDialogCancel - Function to call to settle dialog with "cancel" outcome
-
-// this is part of our example (so not required)
-function onOKClick () {
-  // on OK, it is REQUIRED to
-  // call onDialogOK (with optional payload)
+const { dialogRef, onDialogHide, onDialogOK } = useDialogPluginComponent()
+defineProps({
+  title: String,
+  message: String,
+  icon: String,
+  color: String
+})
+function onOKClick() {
   onDialogOK()
-  // or with payload: onDialogOK({ ... })
-  // ...and it will also hide the dialog automatically
 }
 </script>
+
+<style scoped>
+.q-dialog-plugin {
+  max-width: 400px;
+  border-radius: 12px;
+}
+</style>
