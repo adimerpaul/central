@@ -4,9 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\Concepto;
 use App\Models\PagoConcepto;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class PagoConceptoController extends Controller{
+    function print(Request $request) {
+        $pago = PagoConcepto::where('codigo', $request->codigo)->first();
+        if (!$pago) {
+            return view('pdf.notfound');
+        }
+        $pdf = Pdf::loadView('pdf.pago', compact('pago'))
+            ->setPaper('half-letter');  // Formato media carta
+
+        return $pdf->stream('recibo_pago.pdf');
+    }
+
     function index(Request $request){
         $fechaInicio = $request->fechaInicio;
         $fechaFin = $request->fechaFin;
