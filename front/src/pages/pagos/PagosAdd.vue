@@ -85,6 +85,7 @@ export default {
         },
         cancel: 'No'
       }).onOk(() => {
+        const phoneUser = this.user.phone;
         this.$axios.post('pagoconcepto', {
           user_id: this.user.id,
           phone: this.user.phone,
@@ -102,9 +103,8 @@ export default {
             const url = `${urlBack}pagos/${pago.codigo}/print`;
 
             let message = `Hola ${pago.user.name}, te envio tu comprobante de pago. ${url}`;
-            let phone = pago.user.phone;
 
-            window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${message}`, '_blank');
+            window.open(`https://api.whatsapp.com/send?phone=${phoneUser}&text=${message}`, '_blank');
             this.user = '';
             this.usersGet();
           })
