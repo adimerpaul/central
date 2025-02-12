@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Concepto;
 use App\Models\PagoConcepto;
+use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
@@ -31,6 +32,12 @@ class PagoConceptoController extends Controller{
     }
     function store(Request $request){
 
+
+        $phone = $request->phone;
+        $fraterno = User::where('id', $request->user_id)->first();
+        $fraterno->phone = $phone;
+        $fraterno->save();
+
         $user = $request->user();
         $pagoConcepto = new PagoConcepto();
         $concepto = Concepto::find($request->concepto_id);
@@ -46,7 +53,9 @@ class PagoConceptoController extends Controller{
         $pagoConcepto->hora_pago = date('H:i:s');
         $pagoConcepto->save();
 
-        return $pagoConcepto;
+        return PagoConcepto::where('id', $pagoConcepto->id)
+            ->with('user', 'user_pago')
+            ->first();
     }
     function update(Request $request, $id){
         $pagoConcepto = PagoConcepto::find($id);

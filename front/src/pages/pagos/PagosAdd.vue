@@ -10,10 +10,11 @@
             </div>
             <div class="col-12 col-md-4 q-pa-xs">
               <label class="text-bold">Fraterno</label>
-              <q-select v-model="user" :options="users" outlined dense use-input emit-value map-options
+              <q-select v-model="user" :options="users" outlined dense use-input
                         clearable @filter="filterFn" :option-value="'id'" :option-label="'name'"
                         :rules="[val => !!val || 'Seleccione un usuario']"
               />
+<!--              <pre>{{user}}</pre>-->
             </div>
             <div class="col-12 col-md-3 q-pa-xs">
               <label class="text-bold">Concepto</label>
@@ -62,6 +63,7 @@ export default {
       conceptos: [],
       concepto: '',
       loading: false,
+      phone: '',
     }
   },
   mounted() {
@@ -71,23 +73,50 @@ export default {
   methods: {
     registrarPago() {
       this.loading = true;
-      this.$axios.post('pagoconcepto', {
-        user_id: this.user,
-        concepto_id: this.concepto.id,
-        monto: this.concepto.monto,
-      })
-        .then(response => {
-          const user = this.users.find(user => user.id === this.user);
-          const monto = this.concepto.tipo === 'Cobro' ? this.concepto.monto : -this.concepto.monto;
-          this.$alert.success(`Pago registrado `,`${user.name.split('|')[0]} Bs. ${monto}`);
-          this.user = '';
+
+      this.$q.dialog({
+        title: 'Confirmar pago',
+        message: `¿Está seguro de registrar el pago de ${this.concepto.nombreBs} a ${this.user.name.split('|')[0]}?`,
+        ok: 'Si',
+        prompt: {
+          model: this.user.phone,
+          type: 'text',
+          placeholder: 'Escriba su contraseña'
+        },
+        cancel: 'No'
+      }).onOk(() => {
+        this.$axios.post('pagoconcepto', {
+          user_id: this.user.id,
+          phone: this.user.phone,
+          concepto_id: this.concepto.id,
+          monto: this.concepto.monto,
         })
-        .catch(error => {
-          console.log(error);
-        })
-        .finally(() => {
-          this.loading = false;
-        });
+          .then(response => {
+            const pago = response.data;
+            const user = this.users.find(user => user.id === this.user.id);
+            const monto = this.concepto.tipo === 'Cobro' ? this.concepto.monto : -this.concepto.monto;
+            this.$alert.success(`Pago registrado `,`${user.name.split('|')[0]} Bs. ${monto}`);
+            // enviar pow whtasapp
+            let urlBack = this.$url;
+            urlBack = urlBack.replace('api/', '');
+            const url = `${urlBack}pagos/${pago.codigo}/print`;
+
+            let message = `Hola ${pago.user.name}, te envio tu comprobante de pago. ${url}`;
+            let phone = pago.user.phone;
+
+            window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${message}`, '_blank');
+            this.user = '';
+            this.usersGet();
+          })
+          .catch(error => {
+            console.log(error);
+          })
+          .finally(() => {
+            this.loading = false;
+          });
+      }).onCancel(() => {
+        this.loading = false;
+      });
     },
     conceptosGet() {
       this.$axios.get('conceptos')
@@ -101,7 +130,7 @@ export default {
     usersGet() {
       this.$axios.get('users')
         .then(response => {
-          this.users = response.data.map(user => ({ id: user.id, name: user.name + '|' + user.codigo }));
+          this.users = response.data.map(user => ({ id: user.id, name: user.name + '|' + user.codigo,phone: user.phone }));
           this.usersAll = this.users;
         })
         .catch(error => {
