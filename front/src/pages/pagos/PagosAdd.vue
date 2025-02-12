@@ -84,8 +84,8 @@ export default {
           placeholder: 'Escriba su contraseña'
         },
         cancel: 'No'
-      }).onOk(() => {
-        const phoneUser = this.user.phone;
+      }).onOk((data) => {
+        const phoneUser = data
         this.$axios.post('pagoconcepto', {
           user_id: this.user.id,
           phone: this.user.phone,
